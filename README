@@ -1,0 +1,31 @@
+tiddlywebplugins.postgresql
+===========================
+
+_A plugin for [TiddlyWeb](http://tiddlyweb.com) subclassing
+[tiddlywebplugins.sqlalchemy3](https://github.com/cdent/tiddlywebplugins.sqlalchemy)
+with postgresql specifics._
+
+The main additions to sqlalchemy3 are:
+
+* Support finding tiddlers that have geo.lat and geo.long fields
+  near a location.
+
+Setup
+-----
+
+You will need to create a database:
+
+```
+createdb tiddlyweb
+```
+
+Add the following to `tiddlywebconfig.py`:
+
+```
+'server_store': ['tiddlywebplugins.postgresql', {
+    'db_config': 'postgresql+psycopg2:///tiddlyweb'}],
+'indexer': 'tiddlywebplugins.postgresql', # optional
+```
+
+See <http://tiddlyweb-sql.tiddlyspace.com/> for additional documentation and
+assistance.
