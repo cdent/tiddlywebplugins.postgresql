@@ -7,7 +7,6 @@ http://tiddlyweb.com/
 
 """
 
-from sqlalchemy import event
 from sqlalchemy.engine import create_engine
 from sqlalchemy.exc import DataError
 
@@ -51,8 +50,6 @@ class Store(SQLStore):
         self.session = Session()
 
         if not MAPPED:
-            #_map_tables(self.environ['tiddlyweb.config'],
-            #        Base.metadata.sorted_tables)
             Base.metadata.create_all(ENGINE)
             MAPPED = True
 
@@ -65,41 +62,3 @@ class Store(SQLStore):
             SQLStore.tiddler_put(self, tiddler)
         except DataError, exc:
             raise TypeError('postgres refuses to store tiddler: %s' % exc)
-
-
-def _map_tables(config, tables):
-    """
-    Transform the sqlalchemy table information into mysql specific
-    table information.
-
-    XXX: This ought to be doable in a more declarative fashion.
-    """
-    fulltext = config.get('mysql.fulltext', False)
-    for table in tables:
-
-        if table.name == 'text' and fulltext:
-            table.kwargs['mysql_engine'] = 'MyISAM'
-        else:
-            table.kwargs['mysql_engine'] = 'InnoDB'
-
-        if table.name == 'revision' or table.name == 'tiddler':
-            for column in table.columns:
-                if (column.name == 'tiddler_title'
-                        or column.name == 'title'):
-                    column.type = VARCHAR(length=128, convert_unicode=True)
-
-        if table.name == 'text':
-            for column in table.columns:
-                if column.name == 'text':
-                    column.type = LONGTEXT(convert_unicode=True)
-
-        if table.name == 'tag':
-            for column in table.columns:
-                if column.name == 'tag':
-                    column.type = VARCHAR(length=191, convert_unicode=True)
-
-        if table.name == 'field':
-            for index in table.indexes:
-                # XXX: is the naming system reliable?
-                if index.name == 'ix_field_value':
-                    index.kwargs['mysql_length'] = 191
