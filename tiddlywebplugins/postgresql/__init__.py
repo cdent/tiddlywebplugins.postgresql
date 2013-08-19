@@ -4,7 +4,7 @@ tune ups, including geo searches.
 
 http://github.com/cdent/tiddlywebplugins.postgresql
 http://tiddlyweb.com/
-
+http://tiddlyweb-sql.tiddlyspace.com
 """
 
 from sqlalchemy.engine import create_engine
@@ -30,8 +30,8 @@ LOGGER = logging.getLogger(__name__)
 
 class Store(SQLStore):
     """
-    An adaptation of the generic sqlalchemy store, to add mysql
-    specific functionality, including search.
+    An adaptation of the generic sqlalchemy store, to work well
+    with postgresql.
     """
 
     def __init__(self, store_config=None, environ=None):
@@ -61,4 +61,4 @@ class Store(SQLStore):
         try:
             SQLStore.tiddler_put(self, tiddler)
         except DataError, exc:
-            raise TypeError('postgres refuses to store tiddler: %s' % exc)
+            raise TypeError('postgresql refuses to store tiddler: %s' % exc)
