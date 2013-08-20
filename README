@@ -5,6 +5,15 @@ _A plugin for [TiddlyWeb](http://tiddlyweb.com) subclassing
 [tiddlywebplugins.sqlalchemy3](https://github.com/cdent/tiddlywebplugins.sqlalchemy)
 with postgresql specifics._
 
+Install
+-------
+
+To install the plugin and its requirements:
+
+```
+pip install -U tiddlywebplugins.postgresql
+```
+
 Setup
 -----
 
@@ -14,7 +23,7 @@ You will need to create a database:
 createdb tiddlyweb
 ```
 
-Add the following to `tiddlywebconfig.py`:
+Add the following to a new or existing `tiddlywebconfig.py`:
 
 ```
 'server_store': ['tiddlywebplugins.postgresql', {
