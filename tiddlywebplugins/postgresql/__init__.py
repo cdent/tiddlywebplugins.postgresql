@@ -1,10 +1,23 @@
 """
 A subclass of tiddlywebplugins.sqlalchemy with postgresql specific
-tune ups, including geo searches.
+tune ups.
 
 http://github.com/cdent/tiddlywebplugins.postgresql
 http://tiddlyweb.com/
 http://tiddlyweb-sql.tiddlyspace.com
+
+You will need to create a database:
+
+    createdb tiddlyweb
+
+Add the following to `tiddlywebconfig.py`:
+
+    'server_store': ['tiddlywebplugins.postgresql', {
+        'db_config': 'postgresql+psycopg2:///tiddlyweb'}],
+    'indexer': 'tiddlywebplugins.postgresql', # optional
+
+See http://tiddlyweb-sql.tiddlyspace.com/ for additional documentation
+and assistance.
 """
 
 from sqlalchemy.engine import create_engine
