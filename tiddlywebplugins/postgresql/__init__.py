@@ -23,7 +23,8 @@ and assistance.
 from sqlalchemy.engine import create_engine
 from sqlalchemy.exc import DataError
 
-from tiddlywebplugins.sqlalchemy3 import Store as SQLStore, Base, Session
+from tiddlywebplugins.sqlalchemy3 import (Store as SQLStore, Base, Session,
+        index_query)
 
 import logging
 
@@ -32,7 +33,7 @@ import logging
 #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
 #logging.getLogger('sqlalchemy.pool').setLevel(logging.DEBUG)
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 ENGINE = None
 MAPPED = False
