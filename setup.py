@@ -2,7 +2,7 @@ AUTHOR = 'Chris Dent'
 AUTHOR_EMAIL = 'cdent@peermore.com'
 NAME = 'tiddlywebplugins.postgresql'
 DESCRIPTION = 'postgresql-based store for tiddlyweb'
-VERSION = '0.1.2' # don't forget to update __init__.py too
+VERSION = '0.1.3' # don't forget to update __init__.py too
 
 
 import os

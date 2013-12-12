@@ -22,6 +22,7 @@ and assistance.
 
 from sqlalchemy.engine import create_engine
 from sqlalchemy.exc import DataError
+from sqlalchemy.pool import NullPool
 
 from tiddlywebplugins.sqlalchemy3 import (Store as SQLStore, Base, Session,
         index_query)
@@ -33,7 +34,7 @@ import logging
 #logging.getLogger('sqlalchemy.orm.unitofwork').setLevel(logging.DEBUG)
 #logging.getLogger('sqlalchemy.pool').setLevel(logging.DEBUG)
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 ENGINE = None
 MAPPED = False
@@ -56,9 +57,14 @@ class Store(SQLStore):
         Establish the database engine and session,
         creating tables if needed.
         """
+
+        config = self.environ.get('tiddlyweb.config', {})
+        kwargs = {}
+        if config.get('postgresql.use_null_pool'):
+            kwargs['poolclass'] = NullPool
         global ENGINE, MAPPED
         if not ENGINE:
-            ENGINE = create_engine(self._db_config())
+            ENGINE = create_engine(self._db_config(), **kwargs)
             Base.metadata.bind = ENGINE
             Session.configure(bind=ENGINE)
         self.session = Session()
