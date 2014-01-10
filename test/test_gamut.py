@@ -86,11 +86,11 @@ def test_make_a_bunch():
         assert rname in recipes
         assert uname in users
 
-    tiddler = store.get(Tiddler('tiddler0', 'bag0'))
-    assert tiddler.fields['field0'] == 'field0'
-    assert tiddler.fields['fieldone0'] == 'fieldone0'
+    tiddler = store.get(Tiddler(u'tiddler0', u'bag0'))
+    assert tiddler.fields[u'field0'] == u'field0'
+    assert tiddler.fields[u'fieldone0'] == u'fieldone0'
 
-    bag = Bag('bag0')
+    bag = Bag(u'bag0')
     bag = store.get(bag)
     tiddlers = []
     for tiddler in store.list_bag_tiddlers(bag):
@@ -104,7 +104,7 @@ def test_make_a_bunch():
     assert sorted(bag.policy.manage) == ['R:hi0', u'andmanage']
     assert bag.policy.owner == 'owner0'
 
-    user = User('user1')
+    user = User(u'user1')
     user = store.get(user)
     assert user.usersign == 'user1'
     assert user.check_password('pass1')
@@ -112,7 +112,7 @@ def test_make_a_bunch():
     assert 'role1' in user.list_roles()
     assert 'rolehold' in user.list_roles()
 
-    recipe = Recipe('recipe2')
+    recipe = Recipe(u'recipe2')
     recipe = store.get(recipe)
     assert recipe.name == 'recipe2'
     bags = [bag_name for bag_name, filter in recipe.get_recipe()]
@@ -125,7 +125,7 @@ def test_make_a_bunch():
     recipe.policy.manage = [u'andmanage']
     store.put(recipe)
 
-    recipe = Recipe ('recipe2')
+    recipe = Recipe(u'recipe2')
     recipe = store.get(recipe)
     assert recipe.policy.manage == [u'andmanage']
 
@@ -140,7 +140,7 @@ def test_make_a_bunch():
     py.test.raises(NoUserError, 'store.delete(user)')
     py.test.raises(NoUserError, 'store.get(user)')
 
-    tiddler = Tiddler('tiddler9', 'bag9')
+    tiddler = Tiddler(u'tiddler9', u'bag9')
     store.get(tiddler)
     assert tiddler.bag == 'bag9'
     assert tiddler.text == 'hey ho 9'
@@ -152,21 +152,21 @@ def test_make_a_bunch():
     py.test.raises(NoTiddlerError, 'store.get(tiddler)')
 
 def test_binary_tiddler():
-    tiddler = Tiddler('binary', 'bag8')
+    tiddler = Tiddler(u'binary', u'bag8')
     tiddler.type = 'application/binary'
     tiddler.text = 'not really binary'
     store.put(tiddler)
 
-    new_tiddler = Tiddler('binary', 'bag8')
+    new_tiddler = Tiddler(u'binary', u'bag8')
     new_tiddler = store.get(new_tiddler)
     assert new_tiddler.title == 'binary'
     assert new_tiddler.type == 'application/binary'
     assert tiddler.text == b64encode('not really binary')
 
 def test_handle_empty_policy():
-    bag = Bag('empty')
+    bag = Bag(u'empty')
     store.put(bag)
-    new_bag = store.get(Bag('empty'))
+    new_bag = store.get(Bag(u'empty'))
     assert new_bag.policy.read == []
     assert new_bag.policy.manage == []
     assert new_bag.policy.create == []
@@ -184,10 +184,10 @@ def test_tiddler_revisions():
         tiddler.fields[u'carutther%s' % i] = u'x%s' % i
         store.put(tiddler)
 
-    revisions = store.list_tiddler_revisions(Tiddler('oh hi', bag_name))
+    revisions = store.list_tiddler_revisions(Tiddler(u'oh hi', bag_name))
     assert len(revisions) == 20
     first_revision = revisions[-1]
-    tiddler = Tiddler('oh hi', bag_name)
+    tiddler = Tiddler(u'oh hi', bag_name)
     tiddler.revision = first_revision + 13
     tiddler = store.get(tiddler)
     assert tiddler.title == 'oh hi'
@@ -201,7 +201,7 @@ def test_tiddler_revisions():
     py.test.raises(NoTiddlerError, 'store.get(tiddler)')
 
     py.test.raises(NoTiddlerError,
-            'store.list_tiddler_revisions(Tiddler("sleepy", "cow"))')
+            'store.list_tiddler_revisions(Tiddler(u"sleepy", u"cow"))')
 
 def test_interleaved_tiddler_revisions():
     bag_name = u'bag8'
@@ -215,10 +215,10 @@ def test_interleaved_tiddler_revisions():
         store.put(tiddler1)
         store.put(tiddler2)
 
-    revisions = store.list_tiddler_revisions(Tiddler('oh yes', bag_name))
+    revisions = store.list_tiddler_revisions(Tiddler(u'oh yes', bag_name))
     assert len(revisions) == 20
     first_revision = revisions[-1]
-    tiddler = Tiddler('oh yes', bag_name)
+    tiddler = Tiddler(u'oh yes', bag_name)
     tiddler.revision = first_revision + 26 
     tiddler = store.get(tiddler)
     assert tiddler.title == 'oh yes'
@@ -230,35 +230,35 @@ def test_interleaved_tiddler_revisions():
     py.test.raises(NoTiddlerError, 'store.get(tiddler)')
 
     py.test.raises(NoTiddlerError,
-            'store.list_tiddler_revisions(Tiddler("sleepy", "cow"))')
+            'store.list_tiddler_revisions(Tiddler(u"sleepy", u"cow"))')
 
 def test_tiddler_no_bag():
-    tiddler = Tiddler('hi')
+    tiddler = Tiddler(u'hi')
     py.test.raises(NoBagError, 'store.put(tiddler)')
 
 def test_list_tiddlers_no_bag():
-    bag = Bag('carne')
+    bag = Bag(u'carne')
     try:
         py.test.raises(NoBagError, 'store.list_bag_tiddlers(bag).next()')
     except AttributeError:
         assert True
 
 def xtest_case_sensitive():
-    bag = Bag('testcs')
+    bag = Bag(u'testcs')
     store.put(bag)
 
-    tiddlera = Tiddler('testtiddler', 'testcs')
+    tiddlera = Tiddler(u'testtiddler', u'testcs')
     tiddlera.text = u'a'
     store.put(tiddlera)
-    tiddlerb = Tiddler('TestTiddler', 'testcs')
+    tiddlerb = Tiddler(u'TestTiddler', u'testcs')
     tiddlerb.text = u'b'
     store.put(tiddlerb)
 
-    tiddlerc = Tiddler('TestTiddler', 'testcs')
+    tiddlerc = Tiddler(u'TestTiddler', u'testcs')
     tiddlerc = store.get(tiddlerc)
     assert tiddlerc.text == u'b'
 
-    tiddlerd = Tiddler('testtiddler', 'testcs')
+    tiddlerd = Tiddler(u'testtiddler', 'testcs')
     tiddlerd = store.get(tiddlerd)
     assert tiddlerd.text == u'a'
 
@@ -395,13 +395,13 @@ def test_multi_same_tag_tiddler():
     tiddler.tags = [u'foo']
     store.put(tiddler)
 
-    tiddler2 = Tiddler('me', 'holder')
+    tiddler2 = Tiddler(u'me', u'holder')
     tiddler2 = store.get(tiddler2)
     tiddler2.tags.append(u'bar')
     tiddler2.tags.append(u'bar')
     store.put(tiddler2)
 
-    tiddler3 = store.get(Tiddler('me', 'holder'))
+    tiddler3 = store.get(Tiddler(u'me', u'holder'))
     assert sorted(tiddler3.tags) == ['bar', 'foo']
 
 def test_multi_role_user():
@@ -414,11 +414,11 @@ def test_multi_role_user():
     assert list(user2.roles) == ['cow']
 
 def test_long_tiddler_title():
-    store.put(Bag('holder'))
-    long_title = 'I would not do that if I were you, it might have consequences more than dire than you could possibly imagine. So dire you might have an oh no moment something severe.'
-    tiddler1 = Tiddler(long_title + '1', 'holder')
+    store.put(Bag(u'holder'))
+    long_title = u'I would not do that if I were you, it might have consequences more than dire than you could possibly imagine. So dire you might have an oh no moment something severe.'
+    tiddler1 = Tiddler(long_title + '1', u'holder')
     tiddler1.text = 'tiddler1'
-    tiddler2 = Tiddler(long_title + '1', 'holder')
+    tiddler2 = Tiddler(long_title + '1', u'holder')
     tiddler2.text = 'tiddler2'
 
     py.test.raises(TypeError, 'store.put(tiddler1)')
